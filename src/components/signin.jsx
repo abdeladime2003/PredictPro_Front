@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Lock, Trophy, Star, Activity, Zap, Shield, Award } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Mail, Lock, Trophy, Star, Activity, Shield, Award } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom'; // Correction de l'import redondant
+
 // Animation des particules avec Three.js serait idéale ici mais nous allons simuler avec CSS
 const ParticleField = () => {
   const particles = Array.from({ length: 50 });
@@ -62,6 +63,7 @@ const SignInComponent = () => {
   const [error, setError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const formRef = useRef(null);
+  const navigate = useNavigate();
 
   // Effet de particules interactives au survol
   useEffect(() => {
@@ -78,23 +80,41 @@ const SignInComponent = () => {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Veuillez remplir tous les champs');
-      return;
-    }
-    setIsLoading(true);
+        setIsLoading(true);
     setError('');
-    
-    // Animation de chargement
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsLoading(false);
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
-  };
+    try { 
+      const response = await fetch('http://localhost:8000/users/login/', {
+        method : 'POST',
+        headers :{
+          'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({email, password})
+        
+        }
+      );
+      if(!response.ok){
+        throw new Error('Erreur lors de la connexion');
+      }
+      const data = await response.json();
+      console.log('Utilisateur connecté avec succès:', data);
+      setShowSuccess(true);
+      setTimeout(() => navigate('/dashboard'), 1000);
+      //setlocalstorage 
+      localStorage.setItem('user', data.name);
+      localStorage.setItem('token', data.access);
+      localStorage.setItem('refresh' , data.refresh);
+
+    }
+    catch(err){
+      console.log(err);
+      setError('Échec de la connexion. Veuillez réessayer.');
+    }
+    finally{
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-900 to-green-900 relative overflow-hidden">
@@ -152,7 +172,7 @@ const SignInComponent = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl focus:ring-2 
                         focus:ring-green-500/50 focus:border-green-500 transition-all backdrop-blur-sm text-white 
-                        placeholder-green-300/50 relative z-10"
+                        placeholder-green-100/50"
                     />
                   </div>
 
@@ -164,45 +184,46 @@ const SignInComponent = () => {
                     </div>
                     <input
                       type="password"
-                      placeholder="Mot de passe"
+                      placeholder="Votre mot de passe"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl focus:ring-2 
                         focus:ring-green-500/50 focus:border-green-500 transition-all backdrop-blur-sm text-white 
-                        placeholder-green-300/50 relative z-10"
+                        placeholder-green-100/50"
                     />
                   </div>
                 </div>
 
-                {/* Message d'erreur */}
-                {error && <p className="text-red-500 text-sm">{error}</p>}
-                {/* Message de succès */}
-                {showSuccess && <p className="text-green-500 text-sm">Connexion réussie !</p>}
+                {error && <div className="text-red-500 text-sm">{error}</div>}
 
-                {/* Bouton de soumission avec animation de chargement */}
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className={`w-full py-4 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold
-                    transition-transform transform hover:scale-105 disabled:opacity-50`}
-                >
-                  {isLoading ? (
-                    <span className="flex items-center justify-center">
-                      <Activity className="animate-spin mr-2" /> Chargement...
-                    </span>
-                  ) : (
-                    'Se connecter'
-                  )}
-                </button>
-                <div className="mt-6 text-center">
-                <p className="text-sm text-white">
-                Vous débutez chez nous ? {' '}
-                  <Link to="/signature" className="text-black hover:text-white font-semibold">
-                     S'inscrire
-                  </Link>
-                </p>
-              </div>
+                <div>
+                  <button
+                    type="submit"
+                    className={`w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold 
+                      rounded-xl shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 
+                      focus:ring-green-500 hover:bg-gradient-to-l hover:scale-[1.02] transition-all duration-300 ${
+                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Connexion...' : 'Se Connecter'}
+                  </button>
+                </div>
               </form>
+
+              {/* Confirmation de succès */}
+              {showSuccess && (
+                <div className="mt-4 text-green-300 text-center">
+                  Connexion réussie !
+                </div>
+              )}
+
+              <div className="mt-8 text-center text-green-100/80">
+                Pas encore de compte?{' '}
+                <Link to="/signature" className="text-green-400 hover:text-emerald-500 transition-all">
+                  Inscrivez-vous
+                </Link>
+              </div>
             </div>
           </div>
         </div>

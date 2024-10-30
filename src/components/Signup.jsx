@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
   User, 
   Mail, 
@@ -15,11 +15,49 @@ import {
 const SignupForm = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    username: '',
+    first_name: '',
     email: '',
     password: '',
-    confirmPassword: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('http://localhost:8000/users/', {  // Remplace l'URL par celle de ton backend
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création du compte');
+      }
+
+      const data = await response.json();
+      console.log('Utilisateur créé avec succès:', data);
+      setStep(2);  // Passe à la deuxième étape après le succès
+    } catch (err) {
+      console.error(err);
+      setError('Échec de la création du compte. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-green-800 to-blue-900 flex items-center justify-center p-6 relative overflow-hidden">
@@ -56,7 +94,7 @@ const SignupForm = () => {
                   </div>
                   <div className="flex items-center gap-4 text-green-100">
                     <Star className="w-6 h-6 text-yellow-400" />
-                    <p>Pediction des resultats des match</p>
+                    <p>Prédiction des résultats des matchs</p>
                   </div>
                   <div className="flex items-center gap-4 text-green-100">
                     <Medal className="w-6 h-6 text-blue-400" />
@@ -64,7 +102,7 @@ const SignupForm = () => {
                   </div>
                 </div>
 
-                {/* Testimonial */}
+                {/* Témoignage */}
                 <div className="mt-12 bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
                   <p className="text-green-100 italic">"Une révolution dans l'analyse du football"</p>
                   <p className="text-sm text-green-300 mt-2">- Pro League Manager</p>
@@ -82,15 +120,18 @@ const SignupForm = () => {
             {/* Section droite - Formulaire */}
             <div className="p-8 bg-white">
               {step === 1 ? (
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="space-y-1">
                     <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                
                       <Trophy className="w-4 h-4 text-yellow-500" />
+                      Nom d'utilisateur
                     </label>
                     <div className="relative group">
                       <input
                         type="text"
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleInputChange}
                         className="w-full px-5 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 pl-12"
                         placeholder="votre nom d'utilisateur"
                       />
@@ -103,6 +144,9 @@ const SignupForm = () => {
                     <div className="relative group">
                       <input
                         type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         className="w-full px-5 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 pl-12"
                         placeholder="votremail@exemple.com"
                       />
@@ -115,6 +159,9 @@ const SignupForm = () => {
                     <div className="relative group">
                       <input
                         type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
                         className="w-full px-5 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 pl-12"
                         placeholder="••••••••"
                       />
@@ -123,56 +170,28 @@ const SignupForm = () => {
                   </div>
 
                   <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setStep(2);
-                    }}
-                    className="w-full bg-gradient-to-r from-green-600 via-green-500 to-green-600 text-white py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:via-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-green-500/25"
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-green-600 via-green-500 to-green-600 text-white py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:via-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                    disabled={loading}
                   >
-                    Rejoindre l'élite
+                    {loading ? 'Inscription en cours...' : 'Créer un compte'}
                   </button>
+
+                  {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+
+                  <p className="text-gray-500 text-sm mt-4">
+                    Déjà inscrit ? <Link to="/connexion" className="text-green-600 hover:text-green-500">Connectez-vous ici</Link>.
+                  </p>
                 </form>
               ) : (
-                <div className="text-center py-12">
-                  <div className="flex justify-center mb-6">
-                    <div className="relative">
-                      <CheckCircle className="w-20 h-20 text-green-500 animate-pulse" />
-                      <Trophy className="w-8 h-8 text-yellow-500 absolute -right-2 -top-2 animate-bounce" />
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                    Bienvenue dans l'Elite !
-                  </h3>
-                  <p className="text-gray-600 mb-8">
-                    Votre accès premium est maintenant activé.
-                  </p>
-                  <Link to ='/connexion' className="px-6 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors">
-                    Accéder à mon espace
-                  </Link>
+                <div className="flex flex-col items-center justify-center">
+                  <CheckCircle className="w-16 h-16 text-green-500" />
+                  <h2 className="text-2xl font-bold mt-4">Compte créé avec succès !</h2>
+                  <p className="text-gray-600 mt-2">Vous pouvez maintenant vous connecter.</p>
+                  <Link to="/connexion" className="mt-6 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition">Aller à la connexion</Link>
                 </div>
               )}
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-500">
-                  Déjà membre ?{' '}
-                  <Link to="/connexion" className="text-green-600 hover:text-green-700 font-semibold">
-                    Connexion
-                  </Link>
-                </p>
-              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Badges de sécurité */}
-        <div className="mt-8 flex justify-center gap-6">
-          <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl px-4 py-2 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-green-400" />
-            <span className="text-white text-sm">Sécurité SSL</span>
-          </div>
-          <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl px-4 py-2 flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-yellow-400" />
-            <span className="text-white text-sm">Support Premium</span>
           </div>
         </div>
       </div>
