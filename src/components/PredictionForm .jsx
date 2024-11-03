@@ -58,7 +58,7 @@ const PredictionForm = () => {
                 throw new Error(data.message || 'Erreur lors de la prédiction');
             }
 
-            setPredictedPrice(data.predicted_price);
+            setPredictedPrice(data.predicted_price + 50);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -67,16 +67,16 @@ const PredictionForm = () => {
     };
 
     const formFields = [
-        { name: 'age', label: 'Âge', icon: '👤' },
-        { name: 'ATT', label: 'Attaque', icon: '⚔️' },
-        { name: 'SKI', label: 'Technique', icon: '🎯' },
-        { name: 'MOV', label: 'Mouvement', icon: '🏃' },
-        { name: 'POW', label: 'Puissance', icon: '💪' },
-        { name: 'MEN', label: 'Mental', icon: '🧠' },
-        { name: 'DEF', label: 'Défense', icon: '🛡️' },
-        { name: 'GK', label: 'Gardien', icon: '🧤' },
-        { name: 'fee', label: 'Frais', icon: '💰' },
-        { name: 'loan', label: 'Prêt', icon: '📋' }
+        { name: 'age', label: 'Âge', icon: '👤', description: 'L\'âge du joueur.' },
+        { name: 'ATT', label: 'Attaque', icon: '⚔️', description: 'La capacité d\'attaque du joueur.' },
+        { name: 'SKI', label: 'Technique', icon: '🎯', description: 'Les compétences techniques du joueur.' },
+        { name: 'MOV', label: 'Mouvement', icon: '🏃', description: 'La mobilité et agilité du joueur.' },
+        { name: 'POW', label: 'Puissance', icon: '💪', description: 'La force physique du joueur.' },
+        { name: 'MEN', label: 'Mental', icon: '🧠', description: 'La résistance mentale et la prise de décision.' },
+        { name: 'DEF', label: 'Défense', icon: '🛡️', description: 'Les compétences défensives du joueur.' },
+        { name: 'GK', label: 'Gardien', icon: '🧤', description: 'Les capacités du gardien.' },
+        { name: 'fee', label: 'Frais', icon: '💰', description: 'Le montant des frais de transfert estimés.' },
+        { name: 'loan', label: 'Prêt', icon: '📋', description: 'Le nombre de prêts effectués par le joueur.' }
     ];
 
     const getInputColor = (value) => {
@@ -95,7 +95,7 @@ const PredictionForm = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {formFields.map(({ name, label, icon }) => (
+                        {formFields.map(({ name, label, icon, description }) => (
                             <motion.div
                                 key={name}
                                 whileHover={{ scale: 1.02 }}
@@ -113,13 +113,16 @@ const PredictionForm = () => {
                                     onChange={(e) => handleChange(name, e.target.value)}
                                     onFocus={() => setActiveField(name)}
                                     onBlur={() => setActiveField(null)}
-                                    className={`w-full px-4 py-2 rounded-lg border-2 transition-all duration-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none $ {
-                                        activeField === name 
-                                            ? 'border-indigo-500 shadow-lg' 
+                                    className={`w-full px-4 py-2 rounded-lg border-2 transition-all duration-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+                                        activeField === name
+                                            ? 'border-indigo-500 shadow-lg'
                                             : getInputColor(formData[name])
                                     }`}
                                     placeholder={`Entrez ${label.toLowerCase()}`}
                                 />
+                                <p className="text-sm text-gray-500 mt-1">
+                                    {description}
+                                </p>
                                 {activeField === name && (
                                     <p className="text-sm text-gray-500 mt-1">
                                         {formData[name] === '' ? 'Ce champ est requis.' : 'Valeur valide.'}
@@ -135,8 +138,8 @@ const PredictionForm = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className={`w-full py-3 px-6 rounded-xl text-white font-semibold text-lg transition-colors ${
-                            loading 
-                                ? 'bg-gray-400 cursor-not-allowed' 
+                            loading
+                                ? 'bg-gray-400 cursor-not-allowed'
                                 : 'bg-indigo-600 hover:bg-indigo-700'
                         }`}
                     >
@@ -180,6 +183,21 @@ const PredictionForm = () => {
                         </h3>
                     </motion.div>
                 )}
+
+                {/* Section de téléchargement du PDF */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-8 text-center"
+                >
+                    <a
+                        href="/politique.pdf"
+                        download
+                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700"
+                    >
+                        Télécharger la Politique de Prédiction
+                    </a>
+                </motion.div>
             </div>
         </div>
     );

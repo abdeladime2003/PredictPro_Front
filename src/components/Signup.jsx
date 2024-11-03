@@ -1,16 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  User, 
-  Mail, 
-  Lock,
-  Trophy,
-  CheckCircle,
-  Star,
-  Shield,
-  Medal,
-  Crown
-} from 'lucide-react';
+import { User, Mail, Lock, Trophy, CheckCircle, Star, Shield, Medal, Crown } from 'lucide-react';
+import { GoogleLogin } from 'react-google-login';
 
 const SignupForm = () => {
   const [step, setStep] = useState(1);
@@ -36,7 +27,7 @@ const SignupForm = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8000/users/', {  // Remplace l'URL par celle de ton backend
+      const response = await fetch('http://localhost:8000/users/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -50,13 +41,23 @@ const SignupForm = () => {
 
       const data = await response.json();
       console.log('Utilisateur créé avec succès:', data);
-      setStep(2);  // Passe à la deuxième étape après le succès
+      setStep(2);
     } catch (err) {
       console.error(err);
       setError('Échec de la création du compte. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const responseGoogle = async (response) => {
+    const { profileObj, tokenId } = response;
+
+    // Vous pouvez ensuite envoyer ces informations à votre backend
+    console.log('Profil Google:', profileObj);
+    console.log('Token:', tokenId);
+
+    // Ajoutez la logique pour enregistrer l'utilisateur avec les données récupérées
   };
 
   return (
@@ -86,7 +87,7 @@ const SignupForm = () => {
                     Football IA Elite
                   </h1>
                 </div>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-center gap-4 text-green-100">
                     <Shield className="w-6 h-6 text-green-400" />
@@ -171,26 +172,38 @@ const SignupForm = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-green-600 via-green-500 to-green-600 text-white py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:via-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-2"
-                    disabled={loading}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl transition duration-200"
                   >
-                    {loading ? 'Inscription en cours...' : 'Créer un compte'}
+                    {loading ? 'Chargement...' : 'S’inscrire'}
                   </button>
 
-                  {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+                  {error && <p className="text-red-500 text-sm">{error}</p>}
 
-                  <p className="text-gray-500 text-sm mt-4">
-                    Déjà inscrit ? <Link to="/connexion" className="text-green-600 hover:text-green-500">Connectez-vous ici</Link>.
-                  </p>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-500">
+                      Vous avez déjà un compte? <Link to="/login" className="text-green-600">Connectez-vous</Link>
+                    </p>
+                  </div>
                 </form>
               ) : (
-                <div className="flex flex-col items-center justify-center">
-                  <CheckCircle className="w-16 h-16 text-green-500" />
-                  <h2 className="text-2xl font-bold mt-4">Compte créé avec succès !</h2>
-                  <p className="text-gray-600 mt-2">Vous pouvez maintenant vous connecter.</p>
-                  <Link to="/connexion" className="mt-6 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition">Aller à la connexion</Link>
+                <div className="text-center">
+                  <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold text-green-700">Inscription réussie!</h2>
+                  <p className="text-gray-600">Vous pouvez maintenant vous connecter et profiter de nos services.</p>
                 </div>
               )}
+
+              {/* Connexion avec Google */}
+              <div className="mt-6">
+                <GoogleLogin
+                  clientId="271094633502-h0i6duqfb3b8s68g3fmcm9728i07sfdd.apps.googleusercontent.com"
+                  buttonText="Se connecter avec Google"
+                  onSuccess={responseGoogle}
+                  onFailure={(response) => console.log('Échec de connexion Google:', response)}
+                  cookiePolicy={'single_host_origin'}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition duration-200"
+                />
+              </div>
             </div>
           </div>
         </div>

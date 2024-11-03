@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   TrendingUp, Award, Calendar, Users, Activity,
@@ -8,8 +8,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const Dashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
-  //recuperer le nom de l'utilisateur connecté
+  const [totalValue, setTotalValue] = useState(0); // État pour stocker la longueur des prédictions
   const name = localStorage.getItem('user');
+  
   // Données de simulation pour le graphique
   const performanceData = [
     { name: 'Lun', success: 65, total: 85 },
@@ -27,24 +28,52 @@ const Dashboard = () => {
     { id: 2, team1: 'Bayern', team2: 'Barcelona', prediction: 'Bayern', result: 'Bayern', correct: true },
     { id: 3, team1: 'Liverpool', team2: 'Man City', prediction: 'Liverpool', result: 'Man City', correct: false },
   ];
+
   const navigate = useNavigate();
+
   const handlesun = () => {
-    navigate('/prediction');
+    navigate('/choice_interface');
   }
 
+  // Fonction asynchrone pour demander au backend la longueur de la base de données
+  async function fetchPredictions() {
+    try {
+      const response = await fetch('http://localhost:8000/transfer-predictions/predict-price/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Récupération du token d'authentification
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors de la prédiction');
+      }
+
+      const data = await response.json();
+      const totalValue = data.length;
+      setTotalValue(totalValue); // Met à jour l'état avec la longueur des prédictions
+      console.log(`La longueur des prédictions est : ${totalValue}`);
+    } catch (error) {
+      console.error('Erreur :', error.message);
+    }
+  }
+
+  // Appel de la fonction pour récupérer les prédictions lors du montage du composant
+  useEffect(() => {
+    fetchPredictions();
+  }, []); // Le tableau vide signifie que cela ne s'exécute qu'une seule fois au montage
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
-      {/* Header */}
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-yellow-500 text-transparent bg-clip-text">
               Tableau de bord
             </h1>
-          
             <p className="text-gray-700 mt-2">Bienvenue {name}</p>
-
           </div>
           <button onClick={handlesun} className="bg-gradient-to-r from-green-600 to-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
             Nouvelle Prédiction
@@ -53,9 +82,9 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[
+          {[ 
             { title: 'Taux de Réussite', value: '78%', icon: TrendingUp, color: 'from-green-500 to-green-600' },
-            { title: 'Prédictions Totales', value: '145', icon: Activity, color: 'from-blue-500 to-blue-600' },
+            { title: 'Prédictions Totales', value: totalValue, icon: Activity, color: 'from-blue-500 to-blue-600' },
             { title: 'Meilleure Série', value: '12', icon: Award, color: 'from-yellow-500 to-yellow-600' },
             { title: 'Rang Global', value: '#42', icon: Users, color: 'from-purple-500 to-purple-600' }
           ].map((stat, index) => (
@@ -135,15 +164,11 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className={`p-2 rounded-full ${match.correct ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                    {match.correct ? <Star size={20} /> : <Activity size={20} />}
+                    {match.correct ? 'Correct' : 'Incorrect'}
                   </div>
                 </div>
               ))}
             </div>
-            <button className="w-full mt-6 py-3 text-center text-gray-600 hover:text-gray-800 transition-colors duration-200 flex items-center justify-center gap-2">
-              Voir tout l'historique
-              <ChevronRight size={16} />
-            </button>
           </div>
         </div>
       </div>
