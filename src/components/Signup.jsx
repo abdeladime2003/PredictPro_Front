@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Mail, Lock, Trophy, CheckCircle, Star, Shield, Medal, Crown } from 'lucide-react';
-import { GoogleLogin } from 'react-google-login';
 
 const SignupForm = () => {
   const [step, setStep] = useState(1);
@@ -194,16 +193,6 @@ const SignupForm = () => {
               )}
 
               {/* Connexion avec Google */}
-              <div className="mt-6">
-                <GoogleLogin
-                  clientId="271094633502-h0i6duqfb3b8s68g3fmcm9728i07sfdd.apps.googleusercontent.com"
-                  buttonText="Se connecter avec Google"
-                  onSuccess={responseGoogle}
-                  onFailure={(response) => console.log('Échec de connexion Google:', response)}
-                  cookiePolicy={'single_host_origin'}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition duration-200"
-                />
-              </div>
             </div>
           </div>
         </div>
