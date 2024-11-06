@@ -129,6 +129,37 @@ const Landing = () => {
           </div>
         </div>
       </section>
+<section id="qui-nous" className="py-16 bg-gradient-to-r from-green-400 to-emerald-500 text-white">
+  <div className="container mx-auto text-center">
+    <h2 className="text-4xl font-black mb-8">Qui sommes-nous ?</h2>
+    <p className="text-lg mb-12">
+      Nous sommes une équipe d'élèves ingénieurs passionnés par l'innovation et la technologie. Nous avons créé cette plateforme pour répondre à des besoins spécifiques dans le domaine du sport. Voici les membres de notre équipe :
+    </p>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Abdeladime */}
+      <div className="bg-white text-center rounded-lg shadow-lg p-6 transform hover:scale-105 transition-all duration-300 hover:bg-green-100">
+        <img src="/images/abdeladime.jpg" alt="Abdeladime" className="w-32 h-32 rounded-full mx-auto mb-4 hover:scale-110 transition-all duration-300" />
+        <h3 className="text-xl font-bold mb-2 text-gray-800">Abdeladime</h3>
+        <p className="text-sm text-gray-600">Étudiant ingénieur passionné par la programmation et l'innovation. Il est responsable de la partie backend et de la gestion des bases de données.</p>
+      </div>
+
+      {/* Moaad */}
+      <div className="bg-white text-center rounded-lg shadow-lg p-6 transform hover:scale-105 transition-all duration-300 hover:bg-blue-100">
+        <img src="/images/moaad.jpg" alt="Moaad" className="w-32 h-32 rounded-full mx-auto mb-4 hover:scale-110 transition-all duration-300" />
+        <h3 className="text-xl font-bold mb-2 text-gray-800">Moaad</h3>
+        <p className="text-sm text-gray-600">Moaad est un passionné de développement web et mobile. Il se concentre sur la conception de l'interface utilisateur et l'expérience utilisateur (UI/UX).</p>
+      </div>
+
+      {/* Amine */}
+      <div className="bg-white text-center rounded-lg shadow-lg p-6 transform hover:scale-105 transition-all duration-300 hover:bg-yellow-100">
+        <img src="/images/amine.jpg" alt="Amine" className="w-32 h-32 rounded-full mx-auto mb-4 hover:scale-110 transition-all duration-300" />
+        <h3 className="text-xl font-bold mb-2 text-gray-800">Amine</h3>
+        <p className="text-sm text-gray-600">Amine est un ingénieur en système avec un intérêt particulier pour l'optimisation des performances. Il gère l'infrastructure et le déploiement de la plateforme.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
       <section id="testimonials" className="py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Lock, Trophy, Star, Activity, Shield, Award } from 'lucide-react';
+import { Mail, Lock, Trophy, Star, Shield, Award } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom'; // Correction de l'import redondant
 
 // Animation des particules avec Three.js serait idéale ici mais nous allons simuler avec CSS

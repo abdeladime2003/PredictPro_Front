@@ -49,16 +49,6 @@ const SignupForm = () => {
     }
   };
 
-  const responseGoogle = async (response) => {
-    const { profileObj, tokenId } = response;
-
-    // Vous pouvez ensuite envoyer ces informations à votre backend
-    console.log('Profil Google:', profileObj);
-    console.log('Token:', tokenId);
-
-    // Ajoutez la logique pour enregistrer l'utilisateur avec les données récupérées
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-green-800 to-blue-900 flex items-center justify-center p-6 relative overflow-hidden">
       {/* Motifs d'arrière-plan animés */}
