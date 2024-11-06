@@ -27,7 +27,7 @@ const SignupForm = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8000/users/', {
+      const response = await fetch('http://localhost:8000/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

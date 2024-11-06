@@ -7,7 +7,8 @@ import SignInComponent from './components/signin';
 import Dashboard from './components/Dashbord';
 import PredictionForm from './components/PredictionForm ';
 import PredictionChoice from './components/choice_interface';
-import MatchPredictor from "./components/Prediction_matches"
+import MatchPrediction from "./components/Prediction_matches";
+import ImageGenerator from './components/Generate_image';
 function App() {
   return (
     <div className="App">
@@ -21,7 +22,8 @@ function App() {
           
           />
           <Route path="/choice_interface" element={<PredictionChoice />} />
-          <Route path="/prediction_matches" element={<MatchPredictor />} />
+          <Route path="/prediction_matches" element={<MatchPrediction />} />
+          <Route path="/generate_image" element={<ImageGenerator />} />
           
         </Routes>
       </Router>

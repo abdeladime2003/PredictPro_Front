@@ -8,10 +8,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const Dashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
-  const [totalValue, setTotalValue] = useState(0); // État pour stocker la longueur des prédictions
+  const [totalValue1, setTotalValue1] = useState(0);
+  const [totalValue2, setTotalValue2] = useState(0);
   const name = localStorage.getItem('user');
+  const [recentMatches, setRecentMatches] = useState([]);
   
-  // Données de simulation pour le graphique
   const performanceData = [
     { name: 'Lun', success: 65, total: 85 },
     { name: 'Mar', success: 75, total: 90 },
@@ -22,48 +23,84 @@ const Dashboard = () => {
     { name: 'Dim', success: 88, total: 92 }
   ];
 
-  // Données des matchs récents
-  const recentMatches = [
-    { id: 1, team1: 'PSG', team2: 'Real Madrid', prediction: 'PSG', result: 'PSG', correct: true },
-    { id: 2, team1: 'Bayern', team2: 'Barcelona', prediction: 'Bayern', result: 'Bayern', correct: true },
-    { id: 3, team1: 'Liverpool', team2: 'Man City', prediction: 'Liverpool', result: 'Man City', correct: false },
-  ];
-
   const navigate = useNavigate();
 
-  const handlesun = () => {
+  const handleSun = () => {
     navigate('/choice_interface');
-  }
+  };
 
   // Fonction asynchrone pour demander au backend la longueur de la base de données
-  async function fetchPredictions() {
+  async function fetchPredictions1() {
+    try {
+      const response = await fetch('http://localhost:8000/predict-match/predictions/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors de la prédiction');
+      }
+  
+      const data = await response.json();
+      const len = data.length;
+      setTotalValue1(len); // Remplacez `prevTotal => prevTotal + len` par `len` pour éviter l'incrémentation multiple
+    } catch (error) {
+      console.error('Erreur :', error.message);
+    }
+  }
+  async function fetchPredictions2() {
+    try {
+      const response = await fetch('http://localhost:8000/predict-match/predictions/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors de la prédiction');
+      }
+  
+      const data = await response.json();
+      const len = data.length;
+      setTotalValue2(len); // Remplacez `prevTotal => prevTotal + len` par `len` pour éviter l'incrémentation multiple
+    } catch (error) {
+      console.error('Erreur :', error.message);
+    }
+  }
+  async function fetchRecentMatches() {
     try {
       const response = await fetch('http://localhost:8000/transfer-predictions/predict-price/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Récupération du token d'authentification
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors de la prédiction');
+        throw new Error('Erreur lors de la récupération des matchs récents');
       }
 
       const data = await response.json();
-      const totalValue = data.length;
-      setTotalValue(totalValue); // Met à jour l'état avec la longueur des prédictions
-      console.log(`La longueur des prédictions est : ${totalValue}`);
+      console.log(data);
+      setRecentMatches(data);
     } catch (error) {
       console.error('Erreur :', error.message);
     }
   }
 
-  // Appel de la fonction pour récupérer les prédictions lors du montage du composant
   useEffect(() => {
-    fetchPredictions();
-  }, []); // Le tableau vide signifie que cela ne s'exécute qu'une seule fois au montage
+    fetchPredictions1();
+    fetchPredictions2();
+    fetchRecentMatches(); // Ajout de l'appel pour récupérer les matchs récents
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
@@ -75,7 +112,7 @@ const Dashboard = () => {
             </h1>
             <p className="text-gray-700 mt-2">Bienvenue {name}</p>
           </div>
-          <button onClick={handlesun} className="bg-gradient-to-r from-green-600 to-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+          <button onClick={handleSun} className="bg-gradient-to-r from-green-600 to-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
             Nouvelle Prédiction
           </button>
         </div>
@@ -83,10 +120,10 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[ 
-            { title: 'Taux de Réussite', value: '78%', icon: TrendingUp, color: 'from-green-500 to-green-600' },
-            { title: 'Prédictions Totales', value: totalValue, icon: Activity, color: 'from-blue-500 to-blue-600' },
-            { title: 'Meilleure Série', value: '12', icon: Award, color: 'from-yellow-500 to-yellow-600' },
-            { title: 'Rang Global', value: '#42', icon: Users, color: 'from-purple-500 to-purple-600' }
+            { title: 'Taux de Réussite', value: '91%', icon: TrendingUp, color: 'from-green-500 to-green-600' },
+            { title: 'Prédictions Totales Des Matches', value: totalValue1, icon: Activity, color: 'from-blue-500 to-blue-600' },
+            { title: 'Prédictions Totales Des joueurs', value: totalValue2, icon: Activity, color: 'from-yellow-500 to-yellow-600' },
+            { title: 'Abbonement', value: 'Simple', icon: Users, color: 'from-purple-500 to-purple-600' }
           ].map((stat, index) => (
             <div key={index} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group transform hover:scale-105">
               <div className="p-6">
@@ -102,7 +139,7 @@ const Dashboard = () => {
               </div>
               <div className={`h-1 bg-gradient-to-r ${stat.color}`} />
             </div>
-          ))}
+          ))} 
         </div>
 
         {/* Main Content */}
@@ -152,20 +189,16 @@ const Dashboard = () => {
             <h2 className="text-xl font-semibold mb-6">Prédictions Récentes</h2>
             <div className="space-y-4">
               {recentMatches.map((match) => (
-                <div key={match.id} className="flex items-center p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-lg">{match.team1}</span>
-                      <span className="text-gray-400">vs</span>
-                      <span className="font-semibold text-lg">{match.team2}</span>
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Prédiction: <strong>{match.prediction}</strong>
-                    </div>
+                <div key={match.id} className="flex items-center justify-between border-b pb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">{match.home_team} vs {match.away_team}</h3>
+                    {/*resultat²²*/}
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-gray-500">Résultat : </span>
+                      <span className="font-semibold text-gray-800">{match.home_goals} - {match.away_goals}</span>
+                      </div>
                   </div>
-                  <div className={`p-2 rounded-full ${match.correct ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                    {match.correct ? 'Correct' : 'Incorrect'}
-                  </div>
+                  <ChevronRight className="text-gray-400" />
                 </div>
               ))}
             </div>

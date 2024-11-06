@@ -14,7 +14,7 @@ const PredictionChoice = () => {
     if (type === 'players') {
       navigate('/player-prediction');
     } else {
-      navigate('/match-prediction');
+      navigate('/prediction_matches');
     }
   };
 
