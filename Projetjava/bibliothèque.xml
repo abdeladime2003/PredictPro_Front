@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bibliotheque xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="bibliotheque.xsd">
+    <Documents>
+        <Document>
+            <Titre>Le Petit Prince</Titre>
+            <Auteur>Antoine de Saint-Exupery</Auteur>
+            <Categorie>Fiction</Categorie>
+            <DatePublication>1943-04-06</DatePublication>
+            <ISBN>978-3-16-148410-0</ISBN>
+        </Document>
+        <!-- autres documents -->
+    </Documents>
+    <Auteurs>
+        <Auteur>
+            <Nom>Antoine de Saint-Exupery</Nom>
+            <DateNaissance>1900-06-29</DateNaissance>
+            <Nationalite>Francaise</Nationalite>
+        </Auteur>
+        <!-- autres auteurs -->
+    </Auteurs>
+    <Categories>
+        <Categorie>
+            <Nom>Fiction</Nom>
+            <Description>Livres de fiction.</Description>
+        </Categorie>
+        <!-- autres categories -->
+    </Categories>
+    <Emprunteurs>
+        <Emprunteur>
+            <Nom>Jean Dupont</Nom>
+            <Adresse>123 Rue Example, Paris, France</Adresse>
+            <Telephone>0123456789</Telephone>
+            <Email>jean.dupont@example.com</Email>
+        </Emprunteur>
+        <!-- autres emprunteurs -->
+    </Emprunteurs>
+    <Emprunts>
+        <Emprunt>
+            <Emprunteur>Jean Dupont</Emprunteur>
+            <Document>Le Petit Prince</Document>
+            <DateEmprunt>2023-05-01</DateEmprunt>
+            <DateRetour>2023-05-15</DateRetour>
+        </Emprunt>
+        <!-- autres emprunts -->
+    </Emprunts>
+</Bibliotheque>
