@@ -58,7 +58,7 @@ Avant de démarrer, assure-toi d'avoir les outils suivants installés :
 Clone le projet avec Git :
 
 ```bash
-git clone https://github.com/ton-utilisateur/PredictPro.git
+git clone https://github.com/abdeladime2003/PredictPro_Front.git
 ```
 
 #### 2. Installer les dépendances du frontend
@@ -66,7 +66,7 @@ git clone https://github.com/ton-utilisateur/PredictPro.git
 Va dans le répertoire du frontend et installe les dépendances :
 
 ```bash
-cd PredictPro
+cd PredictPro_Front
 npm install
 ```
 
