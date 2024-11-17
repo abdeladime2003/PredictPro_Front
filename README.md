@@ -1,9 +1,9 @@
 
-# PredictProb - Prédiction des Résultats et Génération d'Images
+# PredictPro - Prédiction des Résultats et Génération d'Images
 
 ## Description
 
-**PredictProb** est une plateforme conviviale et intelligente construite avec **React** et **Tailwind CSS** pour le frontend, et **Django** avec **Django Rest Framework (DRF)** pour le backend. Le site utilise des fonctionnalités basées sur l'**intelligence artificielle** (IA) et le **machine learning** (ML) pour prédire :
+**PredictPro** est une plateforme conviviale et intelligente construite avec **React** et **Tailwind CSS** pour le frontend, et **Django** avec **Django Rest Framework (DRF)** pour le backend. Le site utilise des fonctionnalités basées sur l'**intelligence artificielle** (IA) et le **machine learning** (ML) pour prédire :
 
 - **Les résultats des matchs** (football, basketball, etc.)
 - **Les prix des transferts** dans le monde du sport
