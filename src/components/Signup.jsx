@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Trophy, CheckCircle, Star, Shield, Medal, Crown } from 'lucide-react';
 
 const SignupForm = () => {
@@ -11,6 +11,7 @@ const SignupForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // pour la redirection après une inscription réussie
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,6 +42,11 @@ const SignupForm = () => {
       const data = await response.json();
       console.log('Utilisateur créé avec succès:', data);
       setStep(2);
+
+      // Rediriger l'utilisateur après l'inscription réussie
+      setTimeout(() => {
+        navigate('/connexion'); // redirection vers la page de login ou tableau de bord
+      }, 4000);
     } catch (err) {
       console.error(err);
       setError('Échec de la création du compte. Veuillez réessayer.');
@@ -62,7 +68,7 @@ const SignupForm = () => {
         {/* En-tête Premium */}
         <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 text-black px-8 py-2 rounded-full shadow-xl flex items-center gap-2 animate-bounce">
           <Crown className="w-5 h-5" />
-          <span className="font-bold uppercase tracking-wider text-sm">Premium Access</span>
+          <span className="font-bold uppercase tracking-wider text-sm">Accès Premium</span>
         </div>
 
         <div className="backdrop-blur-lg bg-white bg-opacity-10 rounded-3xl shadow-2xl overflow-hidden border border-white border-opacity-20">
@@ -80,7 +86,7 @@ const SignupForm = () => {
                 <div className="space-y-6">
                   <div className="flex items-center gap-4 text-green-100">
                     <Shield className="w-6 h-6 text-green-400" />
-                    <p>Analyse tactique avancée</p>
+                    <p>Génération d’Images par Prompts</p>
                   </div>
                   <div className="flex items-center gap-4 text-green-100">
                     <Star className="w-6 h-6 text-yellow-400" />
@@ -88,14 +94,14 @@ const SignupForm = () => {
                   </div>
                   <div className="flex items-center gap-4 text-green-100">
                     <Medal className="w-6 h-6 text-blue-400" />
-                    <p>Accès VIP aux prédictions</p>
+                    <p>Prédiction des Prix des Transferts</p>
                   </div>
                 </div>
 
                 {/* Témoignage */}
                 <div className="mt-12 bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
                   <p className="text-green-100 italic">"Une révolution dans l'analyse du football"</p>
-                  <p className="text-sm text-green-300 mt-2">- Pro League Manager</p>
+                  <p className="text-sm text-green-300 mt-2">- PredictPro</p>
                 </div>
               </div>
 
@@ -123,7 +129,7 @@ const SignupForm = () => {
                         value={formData.first_name}
                         onChange={handleInputChange}
                         className="w-full px-5 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 pl-12"
-                        placeholder="votre nom d'utilisateur"
+                        placeholder="Votre nom d'utilisateur"
                       />
                       <User className="w-5 h-5 text-gray-400 absolute left-4 top-3.5 group-hover:text-green-500 transition-colors" />
                     </div>
@@ -138,7 +144,7 @@ const SignupForm = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         className="w-full px-5 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 pl-12"
-                        placeholder="votremail@exemple.com"
+                        placeholder="votre.email@exemple.com"
                       />
                       <Mail className="w-5 h-5 text-gray-400 absolute left-4 top-3.5 group-hover:text-green-500 transition-colors" />
                     </div>
@@ -163,26 +169,19 @@ const SignupForm = () => {
                     type="submit"
                     className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl transition duration-200"
                   >
-                    {loading ? 'Chargement...' : 'S’inscrire'}
+                    {loading ? 'Création du compte...' : 'Créer un compte'}
                   </button>
-
-                  {error && <p className="text-red-500 text-sm">{error}</p>}
-
-                  <div className="text-center">
-                    <p className="text-sm text-gray-500">
-                      Vous avez déjà un compte? <Link to="/login" className="text-green-600">Connectez-vous</Link>
-                    </p>
-                  </div>
                 </form>
               ) : (
                 <div className="text-center">
-                  <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold text-green-700">Inscription réussie!</h2>
-                  <p className="text-gray-600">Vous pouvez maintenant vous connecter et profiter de nos services.</p>
+                  <CheckCircle className="w-10 h-10 text-green-400 mx-auto" />
+                  <h2 className="text-2xl font-bold text-green-300 mt-4">Inscription réussie !</h2>
+                  <p className="mt-4 text-gray-200">Redirection vers la page de connexion...</p>
                 </div>
               )}
-
-              {/* Connexion avec Google */}
+              {error && (
+                <p className="text-red-500 text-center mt-4">{error}</p>
+              )}
             </div>
           </div>
         </div>

@@ -156,21 +156,19 @@ const PredictionForm = () => {
                         )}
                     </motion.button>
                 </form>
-
                 {predictedPrice !== null && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-8 p-6 bg-green-50 rounded-xl border border-green-200"
-                    >
-                        <h3 className="text-2xl font-bold text-green-800 text-center">
-                            Prix prédit : {new Intl.NumberFormat('fr-FR', {
-                                style: 'currency',
-                                currency: 'EUR'
-                            }).format(predictedPrice)}
-                        </h3>
-                    </motion.div>
-                )}
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mt-8 p-6 bg-green-50 rounded-xl border border-green-200"
+    >
+        <h3 className="text-2xl font-bold text-green-800 text-center">
+            {/** Afficher le prix prédit avec round*/}
+            Prix prédit : {Math.round(predictedPrice)} millions €
+        </h3>
+    </motion.div>
+)}
+
 
                 {error && (
                     <motion.div
