@@ -58,7 +58,7 @@ const PredictionForm = () => {
                 throw new Error(data.message || 'Erreur lors de la prédiction');
             }
 
-            setPredictedPrice(data.predicted_price + 50);
+            setPredictedPrice(data.predicted_price);
         } catch (err) {
             setError(err.message);
         } finally {
